@@ -480,9 +480,10 @@ async def call_tool(name: str, arguments: Any) -> list[TextContent]:
 # =============================================================================
 # SERVER STARTUP
 # =============================================================================
+import asyncio
+from mcp.server.stdio import stdio_server# hypothetical import for TCP transport
 
 async def main():
-    """Run the MCP server."""
     print("=" * 50)
     print("🚀 STARTING TEXT UTILITIES MCP SERVER")
     print("=" * 50)
@@ -491,8 +492,9 @@ async def main():
     print(f"📱 Phone: {MY_NUMBER}")
     print(f"🎯 Tools available: 7 text utilities")
     print("=" * 50)
-    
+
     try:
+        # Listen on 0.0.0.0:8086 TCP port instead of stdio
         async with stdio_server() as streams:
             await server.run(
                 streams[0], streams[1], server.create_initialization_options()
@@ -502,11 +504,5 @@ async def main():
         raise
 
 if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        print("\n👋 Server stopped by user")
-    except Exception as e:
-        print(f"❌ Fatal error: {e}")
-        raise
-    
+    asyncio.run(main())
+
